@@ -1,6 +1,8 @@
 import pandas as pd
 import requests
 import os 
+from datetime import datetime
+
 
 cookies = {
     'usaj-f': '%5B%7B%22FeatureID%22%3A9%2C%22CandidateID%22%3A%2200000000-0000-0000-0000-000000000000%22%2C%22Name%22%3A%22VAAPI%22%2C%22Enabled%22%3Afalse%2C%22Variant%22%3A%22%22%2C%22LastModified%22%3A%222022-09-15T12%3A01%3A18.654051-04%3A00%22%7D%2C%7B%22FeatureID%22%3A32%2C%22CandidateID%22%3A%2200000000-0000-0000-0000-000000000000%22%2C%22Name%22%3A%22ATPElasticText%22%2C%22Enabled%22%3Atrue%2C%22Variant%22%3A%22%22%2C%22LastModified%22%3A%222022-09-15T12%3A01%3A18.6540525-04%3A00%22%7D%2C%7B%22FeatureID%22%3A58%2C%22CandidateID%22%3A%2200000000-0000-0000-0000-000000000000%22%2C%22Name%22%3A%22ApplyInfrastructureTag%22%2C%22Enabled%22%3Atrue%2C%22Variant%22%3A%22%22%2C%22LastModified%22%3A%222022-09-15T12%3A01%3A18.6540527-04%3A00%22%7D%2C%7B%22FeatureID%22%3A68%2C%22CandidateID%22%3A%2200000000-0000-0000-0000-000000000000%22%2C%22Name%22%3A%22RemoteAutoComplete%22%2C%22Enabled%22%3Atrue%2C%22Variant%22%3A%22%22%2C%22LastModified%22%3A%222022-09-15T12%3A01%3A18.6540529-04%3A00%22%7D%2C%7B%22FeatureID%22%3A69%2C%22CandidateID%22%3A%2200000000-0000-0000-0000-000000000000%22%2C%22Name%22%3A%22AppGuideDemographics%22%2C%22Enabled%22%3Atrue%2C%22Variant%22%3A%22demo%22%2C%22LastModified%22%3A%222022-09-15T12%3A01%3A18.6540594-04%3A00%22%7D%2C%7B%22FeatureID%22%3A70%2C%22CandidateID%22%3A%2200000000-0000-0000-0000-000000000000%22%2C%22Name%22%3A%22RemoteJob%22%2C%22Enabled%22%3Atrue%2C%22Variant%22%3A%22%22%2C%22LastModified%22%3A%222022-09-15T12%3A01%3A18.6540596-04%3A00%22%7D%5D',
@@ -104,14 +106,14 @@ for i in range(2, last_page + 1):
 job_list_df = pd.concat(job_list)
 
 if os.path.exists("./data/USA_Jobs_USDA_DOJ.csv") == True:
-    new_data = pd.DataFrame(records)
     old_data = pd.read_csv("./data/USA_Jobs_USDA_DOJ.csv")
-    combined_data = pd.concat([new_data, old_data])
+    combined_data = pd.concat([job_list_df, old_data])
+    combined_data["Date Scraped"] =  datetime.today().strftime("%Y-%m-%d")
     print(combined_data)
     combined_data.to_csv("./data/USA_Jobs_USDA_DOJ.csv",  encoding='utf-8')
 else:
     print(job_list_df)
+    job_list_df["Date Scraped"] =  datetime.today().strftime("%Y-%m-%d")
     job_list_df.to_csv("./data/USA_Jobs_USDA_DOJ.csv", encoding='utf-8')
 
-#job_list_df.to_csv("./data/job_list_df_test.csv")
 
